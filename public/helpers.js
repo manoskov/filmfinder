@@ -1,3 +1,15 @@
+// constants for HTML-elements
+
+const likedList = document.getElementById("likedList");
+const dislikedList = document.getElementById("dislikedList");
+const movieText = document.getElementById("movieText");
+const likedMovies = document.getElementById("likedMovies");
+const dislikedMovies = document.getElementById("dislikedMovies");
+let movieTitle;
+let likedArray = [];
+let dislikedArray = [];
+
+
 // Populate dropdown menu with all the available genres
 const populateGenreDropdown = (genres) => {
     const select = document.getElementById('genres')
@@ -32,12 +44,64 @@ const clearCurrentMovie = () => {
 
 // After liking a movie, clears the current movie from the screen and gets another random movie
 const likeMovie = () => {
+
+    likedMovies.style.display = "block";
+
+    if (likedArray.includes(movieTitle)) {
+        alert('Movie already liked!');
+    } else {
+        if (dislikedArray.includes(movieTitle)) {
+            dislikedArray.splice(dislikedArray.indexOf(movieTitle), 1);
+        }
+
+        likedArray.push(movieTitle)
+        likedList.innerHTML = '';
+
+        for (let i = 0; i < likedArray.length; i++) {
+            let listElement = document.createElement("li");
+            listElement.innerHTML = likedArray[i];
+            likedList.appendChild(listElement);
+        }
+
+        dislikedList.innerHTML = '';
+        for (let i = 0; i < dislikedArray.length; i++) {
+            let listElement = document.createElement("li");
+            listElement.innerHTML = dislikedArray[i];
+            dislikedList.appendChild(listElement);
+        }
+    }
     clearCurrentMovie();
     showRandomMovie();
 };
 
 // After disliking a movie, clears the current movie from the screen and gets another random movie
 const dislikeMovie = () => {
+
+    dislikedMovies.style.display = "block";
+
+    if (dislikedArray.includes(movieTitle)) {
+        alert('Movie already disliked!');
+    } else {
+        if (likedArray.includes(movieTitle)) {
+            likedArray.splice(likedArray.indexOf(movieTitle), 1);
+        }
+
+        dislikedArray.push(movieTitle)
+        dislikedList.innerHTML = '';
+
+        for (let i = 0; i < dislikedArray.length; i++) {
+            let listElement = document.createElement("li");
+            listElement.innerHTML = dislikedArray[i];
+            dislikedList.appendChild(listElement);
+        }
+
+        likedList.innerHTML = '';
+        for (let i = 0; i < likedArray.length; i++) {
+            let listElement = document.createElement("li");
+            listElement.innerHTML = likedArray[i];
+            likedList.appendChild(listElement);
+        }
+    }
     clearCurrentMovie();
     showRandomMovie();
 };
@@ -49,7 +113,7 @@ const createMoviePoster = (posterPath) => {
     const posterImg = document.createElement('img');
     posterImg.setAttribute('src', moviePosterUrl);
     posterImg.setAttribute('id', 'moviePoster');
-  
+
     return posterImg;
 };
 
@@ -58,7 +122,9 @@ const createMovieTitle = (title) => {
     const titleHeader = document.createElement('h1');
     titleHeader.setAttribute('id', 'movieTitle');
     titleHeader.innerHTML = title;
-  
+    movieTitle = title;
+
+
     return titleHeader;
 };
 
@@ -67,7 +133,7 @@ const createMovieOverview = (overview) => {
     const overviewParagraph = document.createElement('p');
     overviewParagraph.setAttribute('id', 'movieOverview');
     overviewParagraph.innerHTML = overview;
-  
+
     return overviewParagraph;
 };
 
@@ -84,17 +150,17 @@ const displayMovie = (movieInfo) => {
     const movieTextDiv = document.getElementById('movieText');
     const likeBtn = document.getElementById('likeBtn');
     const dislikeBtn = document.getElementById('dislikeBtn');
-  
+
     // Create HTML content containing movie info
     const moviePoster = createMoviePoster(movieInfo.poster_path);
     const titleHeader = createMovieTitle(movieInfo.title);
     const overviewText = createMovieOverview(movieInfo.overview);
-  
+
     // Append title, poster, and overview to page
     moviePosterDiv.appendChild(moviePoster);
     movieTextDiv.appendChild(titleHeader);
     movieTextDiv.appendChild(overviewText);
-  
+
     showBtns();
     likeBtn.onclick = likeMovie;
     dislikeBtn.onclick = dislikeMovie;
